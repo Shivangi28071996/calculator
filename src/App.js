@@ -17,38 +17,46 @@ class App extends Component {
  };
 
  getVal(e){
+
+   this.setState({result:""});
    if(this.state.operator===""){
-  this.state.firstParam=this.state.firstParam + e.target.value;
-  var firstParam=parseInt(this.state.firstParam);
-  this.setState({firstParam:firstParam});
+  this.setState({firstParam:parseInt(this.state.firstParam + e.target.value, 10)});
    }
    if(this.state.operator !== ""){
-    this.state.secondParam=this.state.secondParam + e.target.value;
-    var secondParam=parseInt(this.state.secondParam);
-    this.setState({secondParam:secondParam});
+    this.setState({secondParam:parseInt(this.state.secondParam + e.target.value, 10)});
    }
+
 }
 
 getOperator(e){
-var operator= e.target.value;
+  var operator= e.target.value;
+
+  if(this.state.secondParam===""){
 this.setState({operator:operator});
+  }
+  else{
+    this.getResult();
+    this.setState({operator:operator});
+  }
 }
 
 getResult(){
+  var result=0;
   if(this.state.operator==="+"){
-    var result=result=this.state.firstParam + this.state.secondParam;
+     result=this.state.firstParam + this.state.secondParam;
   }
-  if(this.state.operator==="-"){
-    var result=result=this.state.firstParam - this.state.secondParam;
+  else if(this.state.operator==="-"){
+     result=this.state.firstParam - this.state.secondParam;
   }
-  if(this.state.operator==="*"){
-    var result=result=this.state.firstParam * this.state.secondParam;
+  else if(this.state.operator==="*"){
+     result=this.state.firstParam * this.state.secondParam;
   }
-  if(this.state.operator==="/"){
-    var result=result=this.state.firstParam / this.state.secondParam;
+  else if(this.state.operator==="/"){
+     result=this.state.firstParam / this.state.secondParam;
   }
-  this.setState({firstParam:"",secondParam:"",operator:""});
+  this.setState({firstParam:result,secondParam:"",operator:""});
   this.setState({result:result});
+  
 }
 
 clearInput(){
@@ -56,7 +64,8 @@ clearInput(){
   var secondParam="";
   var operator="";
   var result="";
-  this.setState({firstParam:"",secondParam:"",operator:"",result:result});
+  this.setState({firstParam:firstParam,secondParam:secondParam,operator:operator});
+  this.setState({result:result});
 }
 
  render(){
@@ -81,7 +90,7 @@ class Keypad extends Component{
     this.clearInput=this.clearInput.bind(this);    
   }
   getVal(e){
-        this.props.getVal(e);
+      this.props.getVal(e);
   }
 
   getOperator(e){
@@ -103,7 +112,7 @@ class Keypad extends Component{
 					<div className="result">
           {this.props.result==="" ? <input type="text" id="textBox" value={total}/>
           :
-          <input type="text" id="textBox" value={this.props.result}/>
+          <input type="text" id="textBox" value={this.props.result + this.props.operator}/>
            }
           
           </div>
@@ -125,7 +134,7 @@ class Keypad extends Component{
 					<button value="/" onClick={this.getOperator}>/</button>
 				 
 					<button value="0" onClick={this.getVal}>0</button>
-					<button onClick={this.clearInput}>Clear</button>
+					<button value="." onClick={this.getVal}>.</button>
 					<button value="=" onClick={this.getResult}>=</button>
 					<button value="*" onClick={this.getOperator}>*</button>
 				  </div>
